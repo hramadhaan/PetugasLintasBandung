@@ -6,6 +6,7 @@
     <uses-sdk xmlns:tools="http://schemas.android.com/tools"
         tools:overrideLibrary="com.gauravk.bubblenavigation" />
 
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -20,7 +21,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:replace="android:allowBackup">
-        <activity android:name=".activity.CameraBarcode"></activity>
+        <activity android:name=".activity.DashboardActivity"></activity>
+        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.PilihLoginActivity" />
+        <activity android:name=".activity.CameraBarcode" />
         <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="portrait" />

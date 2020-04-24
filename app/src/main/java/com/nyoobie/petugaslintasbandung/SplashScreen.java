@@ -12,7 +12,9 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.nyoobie.petugaslintasbandung.activity.LoginActivity;
 import com.nyoobie.petugaslintasbandung.activity.MainActivity;
+import com.nyoobie.petugaslintasbandung.activity.PilihLoginActivity;
 
 public class SplashScreen extends AppCompatActivity {
 
@@ -48,7 +50,7 @@ public class SplashScreen extends AppCompatActivity {
                         });
                         snackbar.show();
                     } else {
-                        startActivity(new Intent(SplashScreen.this, MainActivity.class));
+                        startActivity(new Intent(SplashScreen.this, LoginActivity.class));
                         finish();
                     }
                 }

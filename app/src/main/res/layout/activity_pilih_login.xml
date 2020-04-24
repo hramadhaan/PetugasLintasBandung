@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.PilihLoginActivity">
+
+    <ImageView
+        android:layout_width="266.33dp"
+        android:layout_height="196.73dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="72.14dp"
+        android:foregroundGravity="center_horizontal"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_bridge" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="14.13dp"
+        android:fontFamily="@font/montserratbold"
+        android:gravity="center_horizontal"
+        android:text="Petugas\nLintas Bandung"
+        android:textColor="#262626"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="66dp"
+        android:fontFamily="@font/montserratregular"
+        android:text="Pilih jenis layanan yang akan diambil"
+        android:textColor="#262626"
+        android:textSize="13sp" />
+
+    <Button
+        android:id="@+id/pilih_angkot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginHorizontal="23dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/green_button"
+        android:text="Login sebagai petugas angkot"
+        android:textColor="#fff" />
+
+    <Button
+        android:id="@+id/pilih_damri"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginHorizontal="23dp"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/green_button"
+        android:text="Login sebagai petugas damri"
+        android:textColor="#fff" />
+
+</LinearLayout>
