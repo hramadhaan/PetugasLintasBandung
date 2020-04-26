@@ -21,12 +21,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:replace="android:allowBackup">
-        <activity android:name=".activity.DashboardActivity"></activity>
+        <activity
+            android:name=".activity.SemuaDataActivity"
+            android:parentActivityName=".activity.DashboardActivity"></activity>
+        <activity android:name=".activity.DashboardActivity" />
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.PilihLoginActivity" />
         <activity android:name=".activity.CameraBarcode" />
         <activity
             android:name=".activity.MainActivity"
+            android:parentActivityName=".activity.DashboardActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".SplashScreen">
             <intent-filter>

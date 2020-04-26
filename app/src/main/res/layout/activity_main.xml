@@ -6,6 +6,230 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/main_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#fff">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/main_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/main_judul"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserratbold"
+                    android:text="PERIKSA TIKET"
+                    android:textColor="#000"
+                    android:textSize="14dp" />
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/main_notNull"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/main_appbar"
+        android:layout_marginTop="49dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="266.33dp"
+                android:layout_height="196.73dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_bridge" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="52dp"
+                android:background="@drawable/white_button_no_border"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="23dp"
+                    android:paddingVertical="19dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserratregular"
+                        android:text="Rute"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6.5dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="15.41dp"
+                            android:layout_height="18.49dp"
+                            android:src="@drawable/ic_bus" />
+
+                        <TextView
+                            android:id="@+id/main_rute"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:fontFamily="@font/montserratbold"
+                            android:text="JAKARTA - BANDUNG"
+                            android:textAllCaps="true"
+                            android:textColor="#000"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="13dp"
+                        android:fontFamily="@font/montserratregular"
+                        android:text="Trayek"
+                        android:textSize="12sp" />
+<!---->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="17dp"
+                                android:layout_height="17dp"
+                                android:background="@drawable/ic_flag" />
+
+                            <ImageView
+                                android:layout_width="17dp"
+                                android:layout_height="17dp"
+                                android:layout_marginTop="23dp"
+                                android:background="@drawable/ic_flag_tujuan" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="6dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/main_fromTrayek"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/montserratbold"
+                                android:text="bandung"
+                                android:textAllCaps="true"
+                                android:textColor="#000"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/main_toTrayek"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="18dp"
+                                android:fontFamily="@font/montserratbold"
+                                android:text="jakarta"
+                                android:textAllCaps="true"
+                                android:textColor="#000"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="9dp"
+                        android:fontFamily="@font/montserratregular"
+                        android:text="Nama Pemesan"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/main_namaPemesan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/montserratbold"
+                        android:text="Hanif Ramadhan Abdillah"
+                        android:textAllCaps="true"
+                        android:textColor="#000"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="7dp"
+                        android:fontFamily="@font/montserratregular"
+                        android:text="Jumlah Pesanan"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/main_jumlahPesanan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/montserratbold"
+                        android:text="4 Orang"
+                        android:textColor="#000"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="9dp"
+                        android:fontFamily="@font/montserratregular"
+                        android:text="Total Biaya"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/main_totalHarga"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/montserratbold"
+                        android:text="Rp. 10.000"
+                        android:textColor="#000"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/main_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/green_button"
+            android:fontFamily="@font/montserratbold"
+            android:text="Masukkan Data"
+            android:textColor="#fff" />
+    </LinearLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/main_camera"
         android:layout_width="wrap_content"
@@ -14,6 +238,31 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="15dp"
         android:src="@drawable/ic_barcode_outline"
-        app:backgroundTint="#000" />
+        android:tooltipText="Scan Barcode"
+        app:backgroundTint="#4D925D" />
+
+    <LinearLayout
+        android:id="@+id/main_ifNull"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="186.01dp"
+            android:layout_height="177.08dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_undraw_no_data_qbuo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/montserratbold"
+            android:text="Tidak Ada Data"
+            android:textColor="#000"
+            android:textSize="14sp" />
+    </LinearLayout>
 
 </RelativeLayout>

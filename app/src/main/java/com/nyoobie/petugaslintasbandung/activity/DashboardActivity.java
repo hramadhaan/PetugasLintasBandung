@@ -3,6 +3,9 @@ package com.nyoobie.petugaslintasbandung.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,16 +16,21 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.Dash;
 import com.nyoobie.petugaslintasbandung.R;
+import com.nyoobie.petugaslintasbandung.adapter.DashboardAdapter;
 import com.nyoobie.petugaslintasbandung.data.AppState;
+import com.nyoobie.petugaslintasbandung.models.CheckUser;
 import com.nyoobie.petugaslintasbandung.models.Ringkasan;
 import com.nyoobie.petugaslintasbandung.network.ApiService;
 import com.nyoobie.petugaslintasbandung.utils.ApiUtils;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,6 +44,13 @@ public class DashboardActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView judul;
     private TextView nama, role, jumlahPenumpang, pendapatan, seeAll;
+    private Button click;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.Adapter adapter;
+    private List<CheckUser> checkUserList;
+    private ProgressBar progressBar;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +59,33 @@ public class DashboardActivity extends AppCompatActivity {
         appState = AppState.getInstance();
         apiService = ApiUtils.getApiSerives();
 
+        recyclerView = findViewById(R.id.dashboard_recyclerView);
+        progressBar = findViewById(R.id.dashboard_progressRecycler);
+
         checkTicket = findViewById(R.id.dashboard_checkTicket);
         if (appState.getUser().getRole().equals("angkot")) {
             checkTicket.setVisibility(View.GONE);
         }
+        checkTicket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toBarcode = new Intent(DashboardActivity.this, MainActivity.class);
+                startActivity(toBarcode);
+            }
+        });
+        click = findViewById(R.id.dashboard_clickDisini);
+        click.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toBarcode = new Intent(DashboardActivity.this, MainActivity.class);
+                startActivity(toBarcode);
+            }
+        });
 
         toolbar = findViewById(R.id.dashboard_toolbar);
         judul = toolbar.findViewById(R.id.dashboard_judul);
         setSupportActionBar(toolbar);
+
 
         nama = findViewById(R.id.dashboard_nama);
         nama.setText(appState.getUser().getFirstName() + " " + appState.getUser().getLastName() + ",");
@@ -63,7 +97,7 @@ public class DashboardActivity extends AppCompatActivity {
         seeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showToast("Lihat Semua");
+                startActivity(new Intent(DashboardActivity.this, SemuaDataActivity.class));
             }
         });
 
@@ -76,6 +110,51 @@ public class DashboardActivity extends AppCompatActivity {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(this.getResources().getColor(R.color.color));
         }
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        final String id_user = appState.getUser().getId();
+
+        getData(id_user);
+
+        swipeRefreshLayout = findViewById(R.id.dashboard_refresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getData(id_user);
+                hasilRingkasan(id_user);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    private void getData(String id_user) {
+        Call<List<CheckUser>> listCall = apiService.getData(id_user);
+        listCall.enqueue(new Callback<List<CheckUser>>() {
+            @Override
+            public void onResponse(Call<List<CheckUser>> call, Response<List<CheckUser>> response) {
+                if (response.isSuccessful()) {
+                    checkUserList = response.body();
+                    adapter = new DashboardAdapter(getApplicationContext(), checkUserList);
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                    if (adapter.getItemCount() == 0) {
+                        showToast("Belum Ada Transaksi");
+                    }
+                } else {
+                    showToast(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<CheckUser>> call, Throwable t) {
+                showToast(t.getMessage());
+            }
+        });
     }
 
     private void hasilRingkasan(String id) {
@@ -86,6 +165,8 @@ public class DashboardActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     jumlahPenumpang.setText(response.body().getPenumpang());
                     pendapatan.setText(response.body().getIncome());
+                    recyclerView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
                 } else {
                     showToast(response.message());
                 }
