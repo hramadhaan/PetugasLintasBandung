@@ -1,12 +1,5 @@
 package com.nyoobie.petugaslintasbandung.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,7 +14,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.Dash;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.nyoobie.petugaslintasbandung.R;
 import com.nyoobie.petugaslintasbandung.adapter.DashboardAdapter;
 import com.nyoobie.petugaslintasbandung.data.AppState;
@@ -122,12 +121,12 @@ public class DashboardActivity extends AppCompatActivity {
         getData(id_user);
 
         swipeRefreshLayout = findViewById(R.id.dashboard_refresh);
+        swipeRefreshLayout.setRefreshing(true);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 getData(id_user);
                 hasilRingkasan(id_user);
-                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -138,6 +137,7 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<CheckUser>> call, Response<List<CheckUser>> response) {
                 if (response.isSuccessful()) {
+                    swipeRefreshLayout.setRefreshing(false);
                     checkUserList = response.body();
                     adapter = new DashboardAdapter(getApplicationContext(), checkUserList);
                     recyclerView.setAdapter(adapter);
@@ -163,6 +163,7 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Ringkasan> call, Response<Ringkasan> response) {
                 if (response.isSuccessful()) {
+                    swipeRefreshLayout.setRefreshing(false);
                     jumlahPenumpang.setText(response.body().getPenumpang());
                     pendapatan.setText(response.body().getIncome());
                     recyclerView.setVisibility(View.VISIBLE);

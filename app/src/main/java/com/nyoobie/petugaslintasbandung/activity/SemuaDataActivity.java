@@ -1,11 +1,5 @@
 package com.nyoobie.petugaslintasbandung.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,8 +7,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.nyoobie.petugaslintasbandung.R;
-import com.nyoobie.petugaslintasbandung.adapter.DashboardAdapter;
 import com.nyoobie.petugaslintasbandung.adapter.SemuaDataAdapter;
 import com.nyoobie.petugaslintasbandung.data.AppState;
 import com.nyoobie.petugaslintasbandung.models.CheckUser;
@@ -75,6 +74,8 @@ public class SemuaDataActivity extends AppCompatActivity {
                 Log.d("Coba", "Refresh");
             }
         });
+        swipeRefreshLayout.setRefreshing(true);
+
     }
 
     private void getData(String id_user) {
