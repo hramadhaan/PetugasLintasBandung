@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dashboard_refresh"
     android:layout_width="match_parent"
@@ -15,6 +14,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#fff"
             android:orientation="vertical">
 
             <com.google.android.material.appbar.AppBarLayout
@@ -233,14 +233,6 @@
                     android:textSize="12sp" />
             </RelativeLayout>
 
-            <ProgressBar
-                android:id="@+id/dashboard_progressRecycler"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:visibility="visible" />
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/dashboard_recyclerView"
                 android:layout_width="match_parent"
@@ -249,6 +241,31 @@
                 android:layout_marginTop="14dp"
                 android:nestedScrollingEnabled="true"
                 android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/dashboard_ifNull"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <ImageView
+                    android:layout_width="186dp"
+                    android:layout_height="177dp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/ic_undraw_no_data_qbuo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/montserratbold"
+                    android:text="Tidak Ada Data"
+                    android:textColor="#000"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

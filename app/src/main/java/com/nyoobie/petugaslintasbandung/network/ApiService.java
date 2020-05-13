@@ -1,5 +1,6 @@
 package com.nyoobie.petugaslintasbandung.network;
 
+import com.nyoobie.petugaslintasbandung.models.Check;
 import com.nyoobie.petugaslintasbandung.models.CheckUser;
 import com.nyoobie.petugaslintasbandung.models.DataUser;
 import com.nyoobie.petugaslintasbandung.models.Ringkasan;
@@ -45,5 +46,11 @@ public interface ApiService {
     @GET("checkedByUser/{id_user}")
     Call<List<CheckUser>> getData(
             @Path("id_user") String id_user
+    );
+
+    @GET("checkedByUserDate/{id}/{date}")
+    Call<Check> getDataByDate(
+            @Path("id") String id,
+            @Path("date") String date
     );
 }

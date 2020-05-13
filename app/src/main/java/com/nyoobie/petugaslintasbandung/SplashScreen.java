@@ -6,15 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.nyoobie.petugaslintasbandung.activity.LoginActivity;
-import com.nyoobie.petugaslintasbandung.activity.MainActivity;
-import com.nyoobie.petugaslintasbandung.activity.PilihLoginActivity;
 
 public class SplashScreen extends AppCompatActivity {
 
@@ -25,6 +24,13 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
+
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(this.getResources().getColor(R.color.color));
+        }
 
         final RelativeLayout relativeLayout = findViewById(R.id.splash_main);
 

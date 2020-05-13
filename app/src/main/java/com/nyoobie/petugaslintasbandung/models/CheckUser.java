@@ -25,8 +25,11 @@ public class CheckUser {
     @SerializedName("tujuan")
     @Expose
     private String tujuan;
+    @SerializedName("tanggal_pemesanan")
+    @Expose
+    private String tanggal_pemesanan;
 
-    public CheckUser(String id, Rute rute, String jumlahTiket, String harga, Customer customer, String keberangkatan, String tujuan) {
+    public CheckUser(String id, Rute rute, String jumlahTiket, String harga, Customer customer, String keberangkatan, String tujuan, String tanggal_pemesanan) {
         this.id = id;
         this.rute = rute;
         this.jumlahTiket = jumlahTiket;
@@ -34,6 +37,7 @@ public class CheckUser {
         this.customer = customer;
         this.keberangkatan = keberangkatan;
         this.tujuan = tujuan;
+        this.tanggal_pemesanan = tanggal_pemesanan;
     }
 
     public String getId() {
@@ -90,5 +94,13 @@ public class CheckUser {
 
     public void setTujuan(String tujuan) {
         this.tujuan = tujuan;
+    }
+
+    public String getTanggal_pemesanan() {
+        return tanggal_pemesanan;
+    }
+
+    public void setTanggal_pemesanan(String tanggal_pemesanan) {
+        this.tanggal_pemesanan = tanggal_pemesanan;
     }
 }

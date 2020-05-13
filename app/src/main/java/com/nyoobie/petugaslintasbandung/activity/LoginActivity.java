@@ -24,6 +24,7 @@ import com.nyoobie.petugaslintasbandung.models.Token;
 import com.nyoobie.petugaslintasbandung.network.ApiService;
 import com.nyoobie.petugaslintasbandung.utils.ApiUtils;
 
+import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -82,11 +83,15 @@ public class LoginActivity extends AppCompatActivity {
     private void login(String email, String password) {
 
         login.setEnabled(false);
-
-        if (email.matches("")) {
-            showToast("Masukkan E-Mail Anda !");
+        if (email.matches("") && password.matches("")) {
+            showToastInfo("Masukkan E-Mail dan Password Anda");
+            login.setEnabled(true);
+        } else if (email.matches("")) {
+            showToastInfo("Masukkan E-Mail Anda");
+            login.setEnabled(true);
         } else if (password.matches("")) {
-            showToast("Masukkan Password Anda !");
+            showToastInfo("Masukkan Password Anda");
+            login.setEnabled(true);
         } else {
             closeKeyboard();
 
@@ -97,20 +102,21 @@ public class LoginActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         String hasilToken = response.body().getToken();
                         if (hasilToken.equals("false")) {
-                            showToast("E-Mail atau Password belum terdaftar, silahkan hubungi Admin");
+                            showToastInfo("E-Mail atau Password belum terdaftar, silahkan hubungi Admin");
                             login.setEnabled(true);
                         } else {
                             appState.setToken(hasilToken);
                             appState.setIsLoggedIn(true);
                             saveUser();
                             login.setEnabled(true);
+                            showToastSuccess("Login berhasil");
                         }
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Token> call, Throwable t) {
-                    showToast(t.getMessage());
+                    showToastError(t.getMessage());
                 }
             });
         }
@@ -126,13 +132,13 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else {
-                    showToast(response.message());
+                    showToastInfo("Gagal Membuat Session");
                 }
             }
 
             @Override
             public void onFailure(Call<DataUser> call, Throwable t) {
-                showToast(t.getMessage());
+                showToastError(t.getMessage());
             }
         });
     }
@@ -145,7 +151,15 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void showToast(String message) {
-        Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+    private void showToastInfo(String message) {
+        Toasty.warning(LoginActivity.this, message, Toast.LENGTH_SHORT, true).show();
+    }
+
+    private void showToastError(String message) {
+        Toasty.error(LoginActivity.this, message, Toast.LENGTH_SHORT, true).show();
+    }
+
+    private void showToastSuccess(String message) {
+        Toasty.success(LoginActivity.this, message, Toast.LENGTH_SHORT, true).show();
     }
 }

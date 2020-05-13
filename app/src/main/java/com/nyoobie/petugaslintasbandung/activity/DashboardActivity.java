@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,13 +24,17 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.nyoobie.petugaslintasbandung.R;
 import com.nyoobie.petugaslintasbandung.adapter.DashboardAdapter;
 import com.nyoobie.petugaslintasbandung.data.AppState;
+import com.nyoobie.petugaslintasbandung.models.Check;
 import com.nyoobie.petugaslintasbandung.models.CheckUser;
 import com.nyoobie.petugaslintasbandung.models.Ringkasan;
 import com.nyoobie.petugaslintasbandung.network.ApiService;
 import com.nyoobie.petugaslintasbandung.utils.ApiUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,8 +52,8 @@ public class DashboardActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
     private List<CheckUser> checkUserList;
-    private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private LinearLayout linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,7 @@ public class DashboardActivity extends AppCompatActivity {
         apiService = ApiUtils.getApiSerives();
 
         recyclerView = findViewById(R.id.dashboard_recyclerView);
-        progressBar = findViewById(R.id.dashboard_progressRecycler);
+        linearLayout = findViewById(R.id.dashboard_ifNull);
 
         checkTicket = findViewById(R.id.dashboard_checkTicket);
         if (appState.getUser().getRole().equals("angkot")) {
@@ -68,7 +72,7 @@ public class DashboardActivity extends AppCompatActivity {
         checkTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toBarcode = new Intent(DashboardActivity.this, MainActivity.class);
+                Intent toBarcode = new Intent(DashboardActivity.this, CheckTicketActivity.class);
                 startActivity(toBarcode);
             }
         });
@@ -76,7 +80,7 @@ public class DashboardActivity extends AppCompatActivity {
         click.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toBarcode = new Intent(DashboardActivity.this, MainActivity.class);
+                Intent toBarcode = new Intent(DashboardActivity.this, CheckTicketActivity.class);
                 startActivity(toBarcode);
             }
         });
@@ -102,7 +106,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         hasilRingkasan(appState.getUser().getId());
 
-
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -118,41 +121,52 @@ public class DashboardActivity extends AppCompatActivity {
 
         final String id_user = appState.getUser().getId();
 
-        getData(id_user);
+        Date date = new Date();
+        final String modifiedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
+
+        getData(id_user, modifiedDate);
 
         swipeRefreshLayout = findViewById(R.id.dashboard_refresh);
         swipeRefreshLayout.setRefreshing(true);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getData(id_user);
+                getData(id_user, modifiedDate);
                 hasilRingkasan(id_user);
             }
         });
     }
 
-    private void getData(String id_user) {
-        Call<List<CheckUser>> listCall = apiService.getData(id_user);
-        listCall.enqueue(new Callback<List<CheckUser>>() {
+    private void getData(String id_user, String date) {
+        Call<Check> getData = apiService.getDataByDate(id_user, date);
+        getData.enqueue(new Callback<Check>() {
             @Override
-            public void onResponse(Call<List<CheckUser>> call, Response<List<CheckUser>> response) {
+            public void onResponse(Call<Check> call, Response<Check> response) {
                 if (response.isSuccessful()) {
-                    swipeRefreshLayout.setRefreshing(false);
-                    checkUserList = response.body();
-                    adapter = new DashboardAdapter(getApplicationContext(), checkUserList);
-                    recyclerView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-                    if (adapter.getItemCount() == 0) {
-                        showToast("Belum Ada Transaksi");
+                    if (response.body().getStatus().equals("berhasil")) {
+                        swipeRefreshLayout.setRefreshing(false);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        linearLayout.setVisibility(View.GONE);
+                        checkUserList = response.body().getData();
+                        adapter = new DashboardAdapter(DashboardActivity.this, checkUserList);
+                        recyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    } else if (response.body().getStatus().equals("not found")) {
+                        showToastInfo("Data Tidak Ada");
+                        swipeRefreshLayout.setRefreshing(false);
+                        recyclerView.setVisibility(View.GONE);
+                        linearLayout.setVisibility(View.VISIBLE);
+                    } else {
+//                        showToastInfo("Kesalahan pada status");
                     }
                 } else {
-                    showToast(response.message());
+                    showToastInfo(response.message());
                 }
             }
 
             @Override
-            public void onFailure(Call<List<CheckUser>> call, Throwable t) {
-                showToast(t.getMessage());
+            public void onFailure(Call<Check> call, Throwable t) {
+                showToastError(t.getMessage());
             }
         });
     }
@@ -167,15 +181,14 @@ public class DashboardActivity extends AppCompatActivity {
                     jumlahPenumpang.setText(response.body().getPenumpang());
                     pendapatan.setText(response.body().getIncome());
                     recyclerView.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
                 } else {
-                    showToast(response.message());
+                    showToastInfo(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<Ringkasan> call, Throwable t) {
-                showToast(t.getMessage());
+                showToastError(t.getMessage());
             }
         });
     }
@@ -191,8 +204,16 @@ public class DashboardActivity extends AppCompatActivity {
         }
     }
 
-    private void showToast(String message) {
-        Toast.makeText(DashboardActivity.this, message, Toast.LENGTH_LONG).show();
+    private void showToastInfo(String message) {
+        Toasty.warning(DashboardActivity.this, message, Toast.LENGTH_SHORT, true).show();
+    }
+
+    private void showToastSuccess(String message) {
+        Toasty.success(DashboardActivity.this, message, Toast.LENGTH_SHORT, true).show();
+    }
+
+    private void showToastError(String message) {
+        Toasty.error(DashboardActivity.this, message, Toast.LENGTH_SHORT, true).show();
     }
 
     @Override
@@ -204,9 +225,10 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void logout() {
         if (appState.isLoggedIn()) {
+            showToastSuccess("Logout Anda Berhasil");
             appState.logout();
             appState.removeCurrentUser();
-            startActivity(new Intent(DashboardActivity.this, PilihLoginActivity.class));
+            startActivity(new Intent(DashboardActivity.this, LoginActivity.class));
             finish();
         }
     }

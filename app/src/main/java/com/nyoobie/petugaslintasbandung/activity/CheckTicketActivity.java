@@ -1,16 +1,18 @@
 package com.nyoobie.petugaslintasbandung.activity;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -22,16 +24,19 @@ import com.nyoobie.petugaslintasbandung.models.Status;
 import com.nyoobie.petugaslintasbandung.network.ApiService;
 import com.nyoobie.petugaslintasbandung.utils.ApiUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class CheckTicketActivity extends AppCompatActivity {
 
     private FloatingActionButton floatingActionButton;
     private LinearLayout showData, showNull;
     private Toolbar toolbar;
-    private TextView judul;
     private AppState appState;
     private Button button;
     private String id_order;
@@ -43,7 +48,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_check_ticket);
+
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(this.getResources().getColor(R.color.color));
+        }
 
         //        NETWORK
         apiService = ApiUtils.getApiSerives();
@@ -74,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
 //      TOOLBAR
         toolbar = findViewById(R.id.main_toolbar);
-        judul = toolbar.findViewById(R.id.main_judul);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -85,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
+                IntentIntegrator intentIntegrator = new IntentIntegrator(CheckTicketActivity.this);
                 intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
                 intentIntegrator.setCameraId(0);
                 intentIntegrator.setOrientationLocked(false);
@@ -101,43 +112,64 @@ public class MainActivity extends AppCompatActivity {
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (intentResult != null) {
             if (intentResult.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                showToastInfo("Data Tidak Ada");
             } else {
                 showData.setVisibility(View.VISIBLE);
                 showNull.setVisibility(View.GONE);
                 id_order = intentResult.getContents();
-                showToast(id_order);
-                showUser(id_order);
+                Date date = new Date();
+                final String modifiedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
+                showUser(id_order, modifiedDate);
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void showToast(String message) {
-        Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+    private void showToastInfo(String message) {
+        Toasty.warning(CheckTicketActivity.this, message, Toast.LENGTH_SHORT, true).show();
     }
 
-    private void showUser(String id_order) {
+    private void showToastError(String message) {
+        Toasty.error(CheckTicketActivity.this, message, Toast.LENGTH_SHORT, true).show();
+    }
+
+    private void showToastSuccess(String message) {
+        Toasty.success(CheckTicketActivity.this, message, Toast.LENGTH_SHORT, true).show();
+    }
+
+    private void showUser(String id_order, final String date) {
         Call<CheckUser> checkUserCall = apiService.getCheckUser(id_order);
         checkUserCall.enqueue(new Callback<CheckUser>() {
             @Override
             public void onResponse(Call<CheckUser> call, Response<CheckUser> response) {
                 if (response.isSuccessful()) {
-                    rute.setText(response.body().getRute().getNamaTrayek());
-                    dari.setText(response.body().getKeberangkatan());
-                    tujuan.setText(response.body().getTujuan());
-                    namaPemesan.setText(response.body().getCustomer().getFirstName() + " " + response.body().getCustomer().getLastName());
-                    jumlahPesanan.setText(response.body().getJumlahTiket() + " Orang");
-                    totalHarga.setText("Rp. " + response.body().getHarga());
+                    if (response.body().getTanggal_pemesanan().equals(date)) {
+                        rute.setText(response.body().getRute().getNamaTrayek());
+                        dari.setText(response.body().getKeberangkatan());
+                        tujuan.setText(response.body().getTujuan());
+                        namaPemesan.setText(response.body().getCustomer().getFirstName() + " " + response.body().getCustomer().getLastName());
+                        jumlahPesanan.setText(response.body().getJumlahTiket() + " Orang");
+                        totalHarga.setText("Rp. " + response.body().getHarga());
+                    } else {
+                        rute.setText(response.body().getRute().getNamaTrayek());
+                        dari.setText(response.body().getKeberangkatan());
+                        tujuan.setText(response.body().getTujuan());
+                        namaPemesan.setText(response.body().getCustomer().getFirstName() + " " + response.body().getCustomer().getLastName());
+                        jumlahPesanan.setText(response.body().getJumlahTiket() + " Orang");
+                        totalHarga.setText("Rp. " + response.body().getHarga());
+                        button.setEnabled(false);
+                        button.setText("Tiket Tidak Valid");
+                        showToastInfo("Keberangkatan pada tiket bukan pada hari ini");
+                    }
                 } else {
-                    showToast(response.message());
+                    showToastInfo(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<CheckUser> call, Throwable t) {
-                showToast(t.getMessage());
+                showToastError(t.getMessage());
             }
         });
     }
@@ -149,19 +181,19 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<Status> call, Response<Status> response) {
                 if (response.isSuccessful()) {
                     if (response.body().getStatus().equals("success")) {
-                        showToast("Check Berhasil");
+                        showToastSuccess("Check Berhasil");
                         finish();
                     } else {
-                        showToast("Coba Ulangi Lagi");
+                        showToastInfo("Coba Ulangi Lagi");
                     }
                 } else {
-                    showToast(response.message());
+                    showToastInfo(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<Status> call, Throwable t) {
-                showToast(t.getMessage());
+                showToastError(t.getMessage());
             }
         });
     }
